@@ -13,7 +13,10 @@ ChatResponse _$ChatResponseFromJson(Map<String, dynamic> json) => ChatResponse(
       (json['choices'] as List<dynamic>)
           .map((e) => ChatResponseChoice.fromJson(e as Map<String, dynamic>))
           .toList(),
-  usage: ChatResponseUsage.fromJson(json['usage'] as Map<String, dynamic>),
+  usage:
+      json['usage'] == null
+          ? null
+          : ChatResponseUsage.fromJson(json['usage'] as Map<String, dynamic>),
   streamedData:
       (json['streamed_data'] as List<dynamic>?)
           ?.map((e) => StreamedData.fromJson(e as Map<String, dynamic>))
@@ -31,7 +34,12 @@ Map<String, dynamic> _$ChatResponseToJson(ChatResponse instance) =>
 
 ChatResponseChoice _$ChatResponseChoiceFromJson(Map<String, dynamic> json) =>
     ChatResponseChoice(
-      delta: ChatResponseDelta.fromJson(json['delta'] as Map<String, dynamic>),
+      delta:
+          json['delta'] == null
+              ? null
+              : ChatResponseDelta.fromJson(
+                json['delta'] as Map<String, dynamic>,
+              ),
     );
 
 Map<String, dynamic> _$ChatResponseChoiceToJson(ChatResponseChoice instance) =>
@@ -111,7 +119,10 @@ StreamedData _$StreamedDataFromJson(Map<String, dynamic> json) => StreamedData(
       (json['choices'] as List<dynamic>)
           .map((e) => StreamedDataChoice.fromJson(e as Map<String, dynamic>))
           .toList(),
-  usage: ChatResponseUsage.fromJson(json['usage'] as Map<String, dynamic>),
+  usage:
+      json['usage'] == null
+          ? null
+          : ChatResponseUsage.fromJson(json['usage'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$StreamedDataToJson(StreamedData instance) =>

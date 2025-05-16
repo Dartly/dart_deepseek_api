@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:stream_transform/stream_transform.dart';
 
 import 'models/chat_request.dart';
 import 'models/chat_response.dart';
@@ -79,6 +78,7 @@ class DeepSeekClient {
         message: response.body,
       );
     }
+    print('------------------------${json.encode(response.body)}');
 
     return ChatResponse.fromJson(jsonDecode(response.body));
   }
@@ -202,8 +202,9 @@ class DeepSeekClient {
           }).toList();
 
       // 安全处理usage对象 - 如果usage为null，则创建一个空的Usage对象
+      final dynamic rawUsage = json['usage'];
       final Map<String, dynamic>? usageJson =
-          json['usage'] as Map<String, dynamic>?;
+          (rawUsage is Map<String, dynamic>) ? rawUsage : null;
       final ChatResponseUsage usage =
           usageJson != null
               ? ChatResponseUsage(

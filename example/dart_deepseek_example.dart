@@ -11,7 +11,7 @@ void main() async {
 
   try {
     // 示例1: 基本聊天完成
-    // await basicChatExample(client);
+    await basicChatExample(client);
 
     // 示例2: 流式聊天
     // await streamingChatExample(client);
@@ -20,7 +20,7 @@ void main() async {
     // await chainOfThoughtExample(client);
 
     // 示例4: 流式思维链聊天
-    await streamingChainOfThoughtExample(client);
+    // await streamingChainOfThoughtExample(client);
   } catch (e) {
     print('发生错误: $e');
   } finally {
@@ -42,8 +42,8 @@ Future<void> basicChatExample(DeepSeekClient client) async {
     temperature: 0.7,
   );
 
-  print('回答: ${response.choices.first.delta.content ?? ""}');
-  print('使用的token数: ${response.usage.totalTokens}');
+  print('回答: ${response.choices.first.delta?.content ?? ""}');
+  print('使用的token数: ${response.usage?.totalTokens}');
 }
 
 /// 流式聊天示例
@@ -62,7 +62,7 @@ Future<void> streamingChatExample(DeepSeekClient client) async {
 
   await for (final chunk in stream) {
     for (final choice in chunk.choices) {
-      final content = choice.delta.content;
+      final content = choice.delta?.content;
       if (content != null && content.isNotEmpty) {
         stdout.write(content);
       }
@@ -88,12 +88,12 @@ Future<void> chainOfThoughtExample(DeepSeekClient client) async {
   );
 
   print('思维链回答:');
-  print(response.choices.first.delta.content ?? '');
-  print('使用的token数: ${response.usage.totalTokens}');
+  print(response.choices.first.delta?.content ?? '');
+  print('使用的token数: ${response.usage?.totalTokens}');
 
-  if (response.usage.completionTokensDetails?.reasoningTokens != null) {
+  if (response.usage?.completionTokensDetails?.reasoningTokens != null) {
     print(
-      '推理token数: ${response.usage.completionTokensDetails!.reasoningTokens}',
+      '推理token数: ${response.usage?.completionTokensDetails!.reasoningTokens}',
     );
   }
 }
@@ -186,8 +186,8 @@ Future<void> streamingChainOfThoughtExample(DeepSeekClient client) async {
       final delta = choice.delta;
 
       // 打印推理内容
-      if (delta.reasoningContent != null &&
-          delta.reasoningContent!.isNotEmpty) {
+      if (delta?.reasoningContent != null &&
+          delta!.reasoningContent!.isNotEmpty) {
         // 简单的去重，避免连续打印完全相同的推理步骤片段
         // 只有当新的推理内容与已显示的推理内容末尾不同时才打印
         if (shownReasoningContent.isEmpty ||
@@ -198,7 +198,7 @@ Future<void> streamingChainOfThoughtExample(DeepSeekClient client) async {
       }
 
       // 打印普通内容
-      if (delta.content != null && delta.content!.isNotEmpty) {
+      if (delta?.content != null && delta!.content!.isNotEmpty) {
         stdout.write(delta.content);
         // 如果普通内容出现，且之前有推理内容，且当前块没有新的推理内容，
         // 可能表示一段推理结束，清空shownReasoningContent以准备打印新的推理链

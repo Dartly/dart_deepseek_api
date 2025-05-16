@@ -15,7 +15,7 @@ class ChatResponse {
   final List<ChatResponseChoice> choices;
 
   /// 使用统计
-  final ChatResponseUsage usage;
+  final ChatResponseUsage? usage;
 
   /// 流式数据（仅在流式请求中使用）
   @JsonKey(name: 'streamed_data', includeIfNull: false)
@@ -38,7 +38,7 @@ class ChatResponse {
 @JsonSerializable()
 class ChatResponseChoice {
   /// 增量内容
-  final ChatResponseDelta delta;
+  final ChatResponseDelta? delta;
 
   ChatResponseChoice({required this.delta});
 
@@ -160,7 +160,7 @@ class StreamedData {
   final List<StreamedDataChoice> choices;
 
   /// 使用统计
-  final ChatResponseUsage usage;
+  final ChatResponseUsage? usage;
 
   StreamedData({
     this.nonce,

@@ -30,7 +30,10 @@ DeepSeek API的Dart封装，支持流式输出和思维链等功能。
 
 ```yaml
 dependencies:
-  dart_deepseek: ^1.0.0
+  dart_deepseek: 
+    git:
+      url: https://github.com/Dartly/dart_deepseek_api.git
+      ref: main
 ```
 
 然后运行：
