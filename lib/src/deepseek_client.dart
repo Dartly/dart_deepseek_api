@@ -17,7 +17,7 @@ class DeepSeekClient {
   final String apiKey;
 
   /// HTTP客户端
-  final http.Client _client;
+  http.Client _client;
 
   /// 创建一个新的DeepSeek API客户端
   DeepSeekClient({required this.apiKey, http.Client? client})
@@ -26,6 +26,12 @@ class DeepSeekClient {
   /// 关闭客户端
   void close() {
     _client.close();
+  }
+
+  /// 取消当前请求
+  void cancelRequest() {
+    _client.close();
+    _client = http.Client();
   }
 
   /// 创建授权头
@@ -98,6 +104,9 @@ class DeepSeekClient {
     int? topLogprobs,
     Map<String, dynamic>? streamOptions,
   }) async* {
+    // 创建一个可取消的流控制器
+    final streamController = StreamController<ChatResponse>();
+    bool isCancelled = false;
     final requestBody = ChatRequest(
       messages: messages,
       model: model,
@@ -120,6 +129,13 @@ class DeepSeekClient {
           ..headers.addAll(_createHeaders())
           ..body = jsonEncode(requestBody.toJson());
 
+    // 监听取消请求
+    streamController.onCancel = () {
+      isCancelled = true;
+      _client.close();
+      _client = http.Client();
+    };
+
     // 发送请求并获取StreamedResponse
     final http.StreamedResponse streamedResponse = await _client.send(request);
 
@@ -135,8 +151,12 @@ class DeepSeekClient {
     // 将HTTP响应流分割成行，并解析每行JSON
     // 注意：这里我们传递的是streamedResponse.stream，而不是整个Response对象
     await for (final chunk in _parseStreamedChunks(streamedResponse.stream)) {
+      if (isCancelled) {
+        break;
+      }
       yield chunk;
     }
+    await streamController.close();
   }
 
   /// 解析 SSE 流中的 JSON 块 (从 Stream<List<int>>)
