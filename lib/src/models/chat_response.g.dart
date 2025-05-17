@@ -40,10 +40,18 @@ ChatResponseChoice _$ChatResponseChoiceFromJson(Map<String, dynamic> json) =>
               : ChatResponseDelta.fromJson(
                 json['delta'] as Map<String, dynamic>,
               ),
+      index: (json['index'] as num?)?.toInt() ?? 0,
+      logprobs: json['logprobs'] as String?,
+      finishReason: json['finish_reason'] as String?,
     );
 
 Map<String, dynamic> _$ChatResponseChoiceToJson(ChatResponseChoice instance) =>
-    <String, dynamic>{'delta': instance.delta};
+    <String, dynamic>{
+      'delta': instance.delta,
+      'index': instance.index,
+      if (instance.logprobs case final value?) 'logprobs': value,
+      if (instance.finishReason case final value?) 'finish_reason': value,
+    };
 
 ChatResponseDelta _$ChatResponseDeltaFromJson(Map<String, dynamic> json) =>
     ChatResponseDelta(

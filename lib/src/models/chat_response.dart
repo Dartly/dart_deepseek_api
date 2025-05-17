@@ -39,8 +39,24 @@ class ChatResponse {
 class ChatResponseChoice {
   /// 增量内容
   final ChatResponseDelta? delta;
+  
+  /// 索引
+  final int index;
 
-  ChatResponseChoice({required this.delta});
+  /// 日志概率
+  @JsonKey(includeIfNull: false)
+  final String? logprobs;
+
+  /// 结束原因
+  @JsonKey(name: 'finish_reason', includeIfNull: false)
+  final String? finishReason;
+
+  ChatResponseChoice({
+    required this.delta,
+     this.index=0,
+    this.logprobs,
+    this.finishReason,
+  });
 
   factory ChatResponseChoice.fromJson(Map<String, dynamic> json) =>
       _$ChatResponseChoiceFromJson(json);

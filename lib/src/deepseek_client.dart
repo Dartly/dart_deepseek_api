@@ -84,7 +84,7 @@ class DeepSeekClient {
         message: response.body,
       );
     }
-    print('------------------------${json.encode(response.body)}');
+
 
     return ChatResponse.fromJson(jsonDecode(response.body));
   }
@@ -217,8 +217,18 @@ class DeepSeekClient {
               content: deltaJson['content'] as String?,
               reasoningContent: deltaJson['reasoning_content'] as String?,
             );
+            
+            // 安全处理index、logprobs和finishReason字段
+            final int index = choiceJson['index'] as int? ?? 0;
+            final String? logprobs = choiceJson['logprobs'] as String?;
+            final String? finishReason = choiceJson['finish_reason'] as String?;
 
-            return ChatResponseChoice(delta: delta);
+            return ChatResponseChoice(
+              delta: delta,
+              index: index,
+              logprobs: logprobs,
+              finishReason: finishReason
+            );
           }).toList();
 
       // 安全处理usage对象 - 如果usage为null，则创建一个空的Usage对象
